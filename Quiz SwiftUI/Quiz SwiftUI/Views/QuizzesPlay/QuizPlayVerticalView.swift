@@ -1,40 +1,20 @@
 //
-//  QuizPLay.swift
+//  QuizPlayVerticalView.swift
 //  Quiz SwiftUI
 //
-//  Created by Sergio on 26/09/2021.
+//  Created by Sergio on 26/10/2021.
 //
 
 import SwiftUI
 
-struct QuizPlayView: View {
-
-    @EnvironmentObject var scoresModel: ScoresModel
-    @State var respuesta: String = ""
-    @State var alerta = false
-    @State var angle = 0.0
-    @Environment(\.verticalSizeClass) var verticalSizeClass
+struct QuizPlayVerticalView: View {
     
+    @Binding var respuesta: String
+    @Binding var alerta: Bool
     var quizItem: QuizItem
     
     var body: some View {
         
-        if verticalSizeClass == .compact {
-            HStack {
-                textView
-                Spacer()
-                fotoView
-            }
-        } else {
-            VStack {
-                textView
-                Spacer()
-                fotoView
-            }
-        }
-    }
-    
-    var textView: some View {
         VStack {
             HStack(alignment: .top, spacing: 5) {
                 Text(quizItem.question)
@@ -48,7 +28,7 @@ struct QuizPlayView: View {
                     .shadow(radius: 5)
             }
             
-            //Spacer()
+            Spacer()
             
             TextField("Write your answer",
                       text: $respuesta,
@@ -74,27 +54,17 @@ struct QuizPlayView: View {
             }) {
                 Text("Check")
             }
-        }
-        .padding()
-    }
-    
-    var fotoView: some View {
-        VStack {
+            
+            Spacer()
+            
             NetworkImageView(viewModel: NetworkImageViewModel(url: quizItem.attachment?.url))
                 .clipShape(RoundedRectangle(cornerRadius: 25.0))
                 .shadow(radius: 20)
                 .scaledToFit()
-                .rotationEffect(Angle(degrees: angle))
-                .onTapGesture(count: 2) {                           //Rotacion y respuesta correcta
-                    withAnimation(.easeInOut(duration: 2)) {
-                        respuesta = quizItem.answer
-                        angle = angle + 360
-                    }
-                }
             
             Spacer()
             
-            HStack() {
+            HStack(alignment: .bottom, spacing: 5) {
                 Text("Score: \(scoresModel.acertadas.count)")
                 
                 Spacer()
@@ -106,23 +76,14 @@ struct QuizPlayView: View {
                     .frame(width: 50, height: 50)
                     .clipShape(Circle())
                     .shadow(radius: 5)
-                    .contextMenu() {
-                        Button("Borrar respuesta 🧹") {
-                            respuesta = ""
-                        }
-                        Button("Rellenar respuesta ✔️") {
-                            respuesta = quizItem.answer
-                        }
-                    }
             }
         }
         .padding()
     }
 }
 
-/*struct QuizPLay_Previews: PreviewProvider {
+struct QuizPlayVerticalView_Previews: PreviewProvider {
     static var previews: some View {
-        
-        QuizPlay()
+        QuizPlayVerticalView()
     }
-}*/
+}
